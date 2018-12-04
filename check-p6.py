@@ -55,6 +55,13 @@ if len(student_file_list) != len(files):
         error = 1
         print("\tError: " + filename + " no encontrado. Tienes que subirlo al repositorio.")
 
+if set(files) != set(student_file_list):
+    print()
+    print("Algunos ficheros no se han entregado (o llamado) correctamente")
+    print("Fichero que falta por entregar:",set(files)-set(student_file_list))
+    print("Ficheros entregados de más:",set(student_file_list)-set(files))
+    print()
+
 if not error:
     print("Parece que la entrega se ha realizado bien.")
     print()
