@@ -28,9 +28,9 @@ files = ['README.md',
 
 if len(sys.argv) != 2:
     print()
-    sys.exit("Usage: $ python3 check-p6.py login_github")
+    sys.exit("Usage: $ python3 check-p6.py login_gitlab")
 
-repo_git = "http://github.com/" + sys.argv[1] + "/ptavi-p6"
+repo_git = "http://gitlab.etsit.urjc.es/" + sys.argv[1] + "/ptavi-p6"
 
 aleatorio = str(int(random.random() * 1000000))
 
