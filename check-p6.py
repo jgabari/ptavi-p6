@@ -19,9 +19,10 @@ files = ['README.md',
          '.gitignore',
          'client.py',
          'server.py',
+         'simplertp.py',
+         'bitstring.py',
          'invite.libpcap',
          'check-p6.py',
-         'mp32rtp',
          '.git',
          'cancion.mp3']
 
