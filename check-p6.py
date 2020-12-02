@@ -39,6 +39,7 @@ error = 0
 
 print
 print("Clonando el repositorio " + repo_git)
+print()
 os.system('git clone ' + repo_git + ' /tmp/' + aleatorio + ' > /dev/null 2>&1')
 try:
     student_file_list = os.listdir('/tmp/' + aleatorio)
@@ -50,17 +51,18 @@ except OSError:
 
 if len(student_file_list) != len(files):
     error = 1
-    print("Error: solamente hay que subir al repositorio los ficheros indicados en las guion de practicas, que son en total " + str(len(student_file_list)) + " (incluyendo .git):")
-
-    for filename in files:
-        error = 1
-        print("\tError: " + filename + " no encontrado. Tienes que subirlo al repositorio.")
+    print("Error: solamente hay que subir al repositorio los ficheros indicados en las guion de practicas, que son en total " + str(len(files)) + " (incluyendo .git y .gitignore).")
+    print("Has entregado " + str(len(student_file_list)) + " ficheros")
 
 if set(files) != set(student_file_list):
     print()
     print("Algunos ficheros no se han entregado (o llamado) correctamente")
-    print("Fichero que falta por entregar:",set(files)-set(student_file_list))
-    print("Ficheros entregados de más:",set(student_file_list)-set(files))
+    demenos = set(files) - set(student_file_list)
+    if demenos:
+        print("Fichero(s) que falta(n) por entregar:", demenos)
+    demas = set(student_file_list) - set(files)
+    if demas:
+        print("Fichero(s) entregado(s) de más:", demas)
     print()
 
 if not error:
