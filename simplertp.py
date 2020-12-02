@@ -18,40 +18,38 @@ _sample_rate_dict_25 = {'00': 11025, '01': 12000, '10': 8000}
 
 _sample_rate_dict_2 = {'00': 22050, '01': 24000, '10': 16000}
 
-def send_rtp_packet(header, payload, ip, port, packets_in_payload = 2, number = 0):
+def send_rtp_packet(header, payload, ip, port, packets_in_payload = 1, number = 0):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
         my_socket.connect((ip, port))
         if (number == 0):
             number = 100000000
-        try:
-            for i in range(number):
-                packet = BitArray()
-                packet.append(header.version)
-                packet.append(header.pad_flag)
-                packet.append(header.ext_flag)
-                packet.append(header.cc)
-                packet.append(header.marker)
-                packet.append(header.payload_type)
-                packet.append(BitArray(uint = header.seq_number, length = 16))
-                packet.append(BitArray(uint = header.timestamp, length = 32))
-                packet.append(header.ssrc)
-                packet.append(header.csrc)
-                if header.ext_flag.bin == '1':
-                    print('NotYetImplemented: Here the extension would come')
-#                print('Size of RTP header: ' + str(len(packet.bin)))
-                # Cuantos paquetes mp3 metemos en el mismo paquete RTP
-                for j in range(packets_in_payload):
-                    payload._take_mp3_frame()
-                    packet.append(BitArray(bin = payload.frame))
-#                    print(payload.frame[0:32])
-                packetBytes = packet.tobytes()
-                try:
-                    my_socket.send(packetBytes)
-                except ConnectionRefusedError:
-                    print("Warning: Connection refused. Probably there is nothing listening on the other end.")
-                header._next(payload.frameTimeMs)
-        except IndexError:
-            pass
+        for i in range(number):
+            packet = BitArray()
+            packet.append(header.version)
+            packet.append(header.pad_flag)
+            packet.append(header.ext_flag)
+            packet.append(header.cc)
+            packet.append(header.marker)
+            packet.append(header.payload_type)
+            packet.append(BitArray(uint = header.seq_number, length = 16))
+            packet.append(BitArray(uint = header.timestamp, length = 32))
+            packet.append(header.ssrc)
+            packet.append(header.csrc)
+            if header.ext_flag.bin == '1':
+                print('NotYetImplemented: Here the extension would come')
+#            print('Size of RTP header: ' + str(len(packet.bin)))
+
+            for j in range(packets_in_payload):
+                if not payload._take_mp3_frame():
+                    return
+                packet.append(BitArray(bin = payload.frame))
+#                print(payload.frame[0:32])
+            packetBytes = packet.tobytes()
+            try:
+                my_socket.send(packetBytes)
+                header.next(payload.frameTimeMs)
+            except ConnectionRefusedError:
+                print("Warning: Connection refused. Probably there is nothing listening on the other end.")
 
 
 class RtpPayloadMp3:  # En principio para MP3
@@ -65,6 +63,8 @@ class RtpPayloadMp3:  # En principio para MP3
     def _take_mp3_frame(self):
 
         header = self.bits[self.header_index:self.header_index+32]
+        if not header:
+            return None
         frame_sync = header[0:11]
         version = header[11:13]
         layer = header[13:15]
@@ -99,7 +99,7 @@ class RtpPayloadMp3:  # En principio para MP3
         next_mp3_header_index = self.header_index + frame_length
         self.frame = self.bits[self.header_index:next_mp3_header_index]
         self.header_index = next_mp3_header_index
-
+        return 1
 
 class RtpHeader:
 
@@ -149,11 +149,11 @@ class RtpHeader:
         for i in range(len(csrcValues)):
             self.csrc.append(BitArray(uint = csrcValues[i], length = 32))
 
-    def _next(self, frameTimeMs):
+    def next(self, frameTimeMs):
         self.seq_number += 1
-        # Calcular siguiente timestamp
+        # Calculate next timestamp
         self.timestamp += int(8000 * (frameTimeMs/1000))
 
 
 if __name__ == "__main__":
-    print("main function")
+    print("NotImplemented. To be used as a library")
