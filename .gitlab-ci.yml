@@ -1,0 +1,17 @@
+image: "python:3.8-slim"
+
+before_script:
+  - python --version
+
+stages:
+  - Static Analysis
+
+check:
+  stage: Static Analysis
+  script:
+  - python3 check-p6.py --local
+
+pep8:
+  stage: Static Analysis
+  script:
+  - pycodestyle client.py server.py 
