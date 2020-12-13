@@ -20,9 +20,11 @@ SERVER_NAME = address.split('@')[0]
 SERVER_IP = address.split('@')[1].split(':')[0]
 SERVER_PORT = address.split('@')[1].split(':')[1]
 SDP = '\r\nv=0\r\no=robin@gotham.com 127.0.0.1\r\ns=misesion\r\nt=0\r\nm=audio 34543 RTP\r\n'
+content_length = 'Content-Length: ' + str(len(SDP)) + '\r\n'
 # Contenido que vamos a enviar
 if METHOD == 'INVITE':
-    LINE = 'INVITE sip:' + SERVER_NAME + '@' + SERVER_IP + ' SIP/2.0\r\n' + SDP
+    LINE = 'INVITE sip:' + SERVER_NAME + '@' + SERVER_IP + ' SIP/2.0\r\n'
+    LINE += content_length + SDP
 elif METHOD == 'BYE':
     LINE = 'BYE sip:' + SERVER_NAME + '@' + SERVER_IP + ' SIP/2.0\r\n'
 
