@@ -63,7 +63,7 @@ if __name__ == "__main__":
     try:
         SERVER_IP = sys.argv[1]
         SERVER_PORT = int(sys.argv[2])
-        AUDIO_FILE = open(sys.argv[3])
+        AUDIO_FILE = sys.argv[3]
     except NameError:
         sys.exit('Usage: python3 server.py IP port audio_file')
     serv = socketserver.UDPServer((SERVER_IP, SERVER_PORT), EchoHandler)
