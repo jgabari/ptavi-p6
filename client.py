@@ -19,7 +19,8 @@ except IndexError:
 SERVER_NAME = address.split('@')[0]
 SERVER_IP = address.split('@')[1].split(':')[0]
 SERVER_PORT = int(address.split('@')[1].split(':')[1])
-SDP = '\r\nv=0\r\no=robin@gotham.com 127.0.0.1\r\ns=misesion\r\nt=0\r\nm=audio 34543 RTP\r\n'
+SDP = '\r\nv=0\r\no=robin@gotham.com 127.0.0.1\r\n'
+SDP += 's=misesion\r\nt=0\r\nm=audio 34543 RTP\r\n'
 content_length = 'Content-Length: ' + str(len(SDP)) + '\r\n'
 # Contenido que vamos a enviar
 if METHOD == 'INVITE':

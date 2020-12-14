@@ -35,13 +35,14 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             else:
                 self.wfile.write(b"SIP/2.0 405 Method Not Allowed\r\n\r\n")
             if send_audio:
-                # Primero extraemos del sdp la dirección donde hay que enviarle el audio
+                # Extraemos del sdp la dirección a la que enviar el audio
                 while 1:
                     line2 = self.rfile.read()
-                    if line2.decode('utf-8').split('=')[0] == 'o':
-                        self.client_ip = line2.decode('utf-8').split('=')[1].split(' ')[1]
-                    if line2.decode('utf-8').split('=')[0] == 'm':
-                        self.client_port = line2.decode('utf-8').split('=')[1].split(' ')[1]
+                    cadena = line2.decode('utf-8')
+                    if cadena.split('=')[0] == 'o':
+                        self.client_ip = cadena.split('=')[1].split(' ')[1]
+                    if cadena.split('=')[0] == 'm':
+                        self.client_port = cadena.split('=')[1].split(' ')[1]
                     if not line2:
                         break
                 # Enviamos el audio
@@ -53,9 +54,11 @@ class EchoHandler(socketserver.DatagramRequestHandler):
 
     def send_rtp(self):
         RTP_header = simplertp.RtpHeader()
-        RTP_header.set_header(version=2, marker=secrets.randbits(1), payload_type=14, ssrc=200002)
+        RTP_header.set_header(version=2, marker=secrets.randbits(1),
+                              payload_type=14, ssrc=200002)
         audio = simplertp.RtpPayloadMp3(AUDIO_FILE)
-        simplertp.send_rtp_packet(RTP_header, audio, self.client_ip, self.client_port)
+        simplertp.send_rtp_packet(RTP_header, audio,
+                                  self.client_ip, self.client_port)
 
 
 if __name__ == "__main__":
