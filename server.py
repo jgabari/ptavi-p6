@@ -27,9 +27,8 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                 self.wfile.write(b"SIP/2.0 100 Trying\r\n\r\n" +
                                  b"SIP/2.0 180 Ringing\r\n\r\n" +
                                  b"SIP/2.0 200 OK\r\n\r\n")
+            elif line.decode('utf-8').split(' ')[0] == 'ACK':
                 send_audio = True
-            elif line.decode('utf-8').split('0')[0] == 'ACK':
-                self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
             elif line.decode('utf-8').split(' ')[0] == 'BYE':
                 self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
             else:
